@@ -1,8 +1,10 @@
 import argparse
 import json
 import random
+import pathlib
 
 total_time = 0
+FILE_NAME = "Dane"
 
 # Osoba 1
 def parse_args():
@@ -19,12 +21,11 @@ def parse_args():
     args = parser.parse_args()
     months = args.m
     days = parse_days(args.d)
-    time_of_day = args.p
+    time_of_day = parse_time_of_day(args.p)
     csv_format = args.c
     json_format = args.j
 
     if args.t: # Create files
-        create_paths(months, days, time_of_day, csv_format, json_format)
         write_to_files(months, days, time_of_day, csv_format, json_format)
     if args.o: # Read files
         read_from_files(months, days, time_of_day, csv_format, json_format)
@@ -49,6 +50,16 @@ def parse_days(days):
 
     return parsed_list
 
+def parse_time_of_day(time_of_day):
+    list_of_time_short = ['r', 'w']
+    list_of_time_long = ['rano', 'wieczorem']
+    parsed_list = []
+
+    for i in range(len(list_of_time_short)):
+        if list_of_time_short[i] in time_of_day:
+            parsed_list.append(list_of_time_long[i])
+
+    return parsed_list
 
 # Osoba 4
 def write_to_json(path_to_file):
@@ -76,20 +87,75 @@ def read_from_json(path_to_file):
     except:  # In case of an error, ignore this file
         pass
 
-
-def create_paths(months, days, time_of_day, csv_format, json_format):
+def write_to_csv(path_to_file):
     # TODO
     pass
 
+def read_from_csv(path_to_file):
+    # TODO
+    pass
 
+# Osoba 2
+def create_write_paths(months, days, time_of_day, csv_format, json_format):
+    paths = []
+    for m in months:
+        for d_int in days:
+            for d in d_int:
+                for p in time_of_day:
+                    dir = pathlib.Path(f"{m}/{d}/{p}/")
+                    try:
+                        dir.mkdir(parents=True, exist_ok=True)
+                        if json_format:
+                            paths.append(dir / f"{FILE_NAME}.json")
+                        if csv_format:
+                            paths.append(dir / f"{FILE_NAME}.csv")
+                    except:
+                        pass
+    return paths
+
+
+# Osoba 2
+def create_read_paths(months, days, time_of_day, csv_format, json_format):
+    paths = []
+    for m in months:
+        for d_int in days:
+            for d in d_int:
+                for p in time_of_day:
+                    dir = pathlib.Path(f"{m}/{d}/{p}/")
+
+                    if json_format:
+                        path_to_file = dir / f"{FILE_NAME}.json"
+                        if path_to_file.is_file():
+                            paths.append(path_to_file)
+                        else:
+                            pass # If the file doesn't exist, ignore the path
+
+                    if csv_format:
+                        path_to_file = dir / f"{FILE_NAME}.csv"
+                        if path_to_file.is_file():
+                            paths.append(path_to_file)
+                        else:
+                            pass # If the file doesn't exist, ignore the path
+    return paths
+
+# Osoba 2
 def write_to_files(months, days, time_of_day, csv_format, json_format):
-    # TODO. Use write_to_json
-    pass
+    paths = create_write_paths(months, days, time_of_day, csv_format, json_format)
+    for path in paths:
+        if json_format:
+            write_to_json(path)
+        if csv_format:
+            write_to_csv(path)
 
-
+# Osoba 2
 def read_from_files(months, days, time_of_day, csv_format, json_format):
-    # TODO. Use read_from_json
-    pass
+    paths = create_read_paths(months, days, time_of_day, csv_format, json_format)
+    for path in paths:
+        if json_format:
+            read_from_json(path)
+        if csv_format:
+            read_from_csv(path)
+    print(f"Czas: {total_time}")
 
 
 if __name__ == "__main__":
