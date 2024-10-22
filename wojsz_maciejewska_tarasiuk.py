@@ -87,13 +87,30 @@ def read_from_json(path_to_file):
     except:  # In case of an error, ignore this file
         pass
 
+# Osoba 3
 def write_to_csv(path_to_file):
-    # TODO
-    pass
+    data = [["Model", "Wynik", "Czas"],
+        [random.choice(["A", "B", "C"]), random.randint(0, 1000), f"{random.randint(0, 1000)}s"]]
+    try:
+        with open(path_to_file, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+    except:  # In case of an error, ignore this file
+        pass
 
+# Osoba 3
 def read_from_csv(path_to_file):
-    # TODO
-    pass
+    try:
+        with open(path_to_file, mode='r') as file:
+            reader = csv.reader(file)
+            next(reader)  
+            for row in reader:
+                model, wynik, czas = row
+                if model == "A":
+                    global total_time
+                    total_time += int(czas[:-1]) 
+    except:   #In case of an error, ignore this file
+        pass
 
 # Osoba 2
 def create_write_paths(months, days, time_of_day, csv_format, json_format):
