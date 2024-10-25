@@ -1,3 +1,7 @@
+# Aleksander Wojsz
+# Martyna Maciejewska
+# Yevhenii Tarasiuk
+
 import argparse
 import json
 import csv
